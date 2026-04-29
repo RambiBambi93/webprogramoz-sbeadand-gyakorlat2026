@@ -4,6 +4,8 @@ import Home from './components/Home';
 import Movies from './components/Movies';
 import Contact from './components/Contact';
 import Login from './components/Login';
+import Images from './components/Images';     // ÚJ KOMPONENS BEKÖTVE
+import Messages from './components/Messages'; // ÚJ KOMPONENS BEKÖTVE
 import './App.css';
 
 function App() {
@@ -19,29 +21,24 @@ function App() {
             </div>
             <nav className="nav-menu">
               <Link to="/" className="nav-link">Főoldal</Link>
-              <Link to="/movies" className="nav-link">Filmek (CRUD)</Link>
+              <Link to="/movies" className="nav-link">Filmek</Link>
+              <Link to="/images" className="nav-link">Képek</Link>
               <Link to="/contact" className="nav-link">Kapcsolat</Link>
-            </nav>
-            <div className="user-info" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
               
-              {/* CSAK AKKOR jelenítjük meg a nevet, ha be van jelentkezve valaki */}
+              {/* Üzenetek menü CSAK ha be van jelentkezve */}
+              {user !== "Vendég" && (
+                <Link to="/messages" className="nav-link" style={{color: '#f1c40f'}}>Üzenetek</Link>
+              )}
+            </nav>
+            <div className="user-info">
               {user !== "Vendég" && (
                 <span className="user-name">Bejelentkezett: <b>{user}</b></span>
               )}
-              
-              {/* Ha Vendég, csak a gombot látja. Ha belépett, a Kijelentkezés gombot. */}
               {user === "Vendég" ? (
                 <Link to="/login" className="login-btn">Bejelentkezés</Link>
               ) : (
-                <button 
-                  onClick={() => setUser("Vendég")} 
-                  className="login-btn" 
-                  style={{border: 'none', cursor: 'pointer', backgroundColor: '#6c757d'}}
-                >
-                  Kijelentkezés
-                </button>
+                <button onClick={() => setUser("Vendég")} className="login-btn" style={{border: 'none', cursor: 'pointer', backgroundColor: '#6c757d', color: 'white'}}>Kijelentkezés</button>
               )}
-
             </div>
           </div>
         </header>
@@ -50,9 +47,11 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<Movies />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/contact" element={<Contact user={user} />} />
+            <Route path="/images" element={<Images user={user} />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
-            <Route path="/images" element={<div className="container"><h2>📷 Galéria</h2><p>Hamarosan...</p></div>} />
+            {/* Védett útvonal: Ha nincs belépve, visszadobja a Főoldalra */}
+            <Route path="/messages" element={user !== "Vendég" ? <Messages /> : <Home />} />
           </Routes>
         </main>
       </div>

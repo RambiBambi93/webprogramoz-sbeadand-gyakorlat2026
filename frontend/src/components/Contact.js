@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-function Contact() {
-  const [nev, setNev] = useState('');
+function Contact({ user }) {
   const [email, setEmail] = useState('');
   const [uzenet, setUzenet] = useState('');
   const [statusz, setStatusz] = useState('');
@@ -11,16 +10,16 @@ function Contact() {
     setStatusz('');
 
     try {
+      // Itt a 'nev' fixen a 'user' változó (Vendég vagy a belépett felhasználó)
       const response = await fetch('http://localhost:8000/api.php?adat=uzenet_kuldes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nev, email, uzenet }),
+        body: JSON.stringify({ nev: user, email, uzenet }),
       });
       const res = await response.json();
       
       if (res.status === "success") {
         setStatusz("✅ Üzenet sikeresen elküldve!");
-        setNev('');
         setEmail('');
         setUzenet('');
       } else {
@@ -35,11 +34,10 @@ function Contact() {
     <div className="container">
       <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>✉️ Kapcsolatfelvétel</h2>
       
-      {/* ITT VAN A KESKENYEBB, KÖZÉPRE IGAZÍTOTT DOBOZ */}
       <div style={{
-        maxWidth: '65%',         /* Szélesség lekorlátozása 65%-ra */
-        margin: '0 auto',        /* Középre igazítás */
-        backgroundColor: '#1a1c22', /* Sötét doboz, hogy passzoljon a témához */
+        maxWidth: '65%',         
+        margin: '0 auto',        
+        backgroundColor: '#1a1c22', 
         padding: '30px', 
         borderRadius: '12px',
         border: '1px solid #34495e',
@@ -52,13 +50,19 @@ function Contact() {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Név:</label>
+            {/* ÍRÁSVÉDETT MEZŐ */}
             <input 
               type="text" 
               className="search-bar" 
-              style={{ width: '100%', boxSizing: 'border-box' }}
-              value={nev} 
-              onChange={(e) => setNev(e.target.value)} 
-              placeholder="Pl. Gipsz Jakab"
+              style={{ 
+                width: '100%', 
+                boxSizing: 'border-box', 
+                backgroundColor: '#dcdde1', // Kicsit szürkés háttér
+                cursor: 'not-allowed',      // "Tilos" egérmutató
+                color: '#2f3640'            // Sötétszürke betű
+              }}
+              value={user} 
+              readOnly 
               required 
             />
           </div>
@@ -87,7 +91,6 @@ function Contact() {
             ></textarea>
           </div>
           
-          {/* Visszajelző üzenet (sikeres/sikertelen küldés) */}
           {statusz && (
             <p style={{ 
               textAlign: 'center', 
@@ -105,7 +108,6 @@ function Contact() {
         </form>
       </div>
 
-      {/* Mobilos nézet miatt, ha nagyon összeugrik a képernyő, alkalmazkodni fog */}
       <style>{`
         @media (max-width: 768px) {
           div[style*="maxWidth: 65%"] {
