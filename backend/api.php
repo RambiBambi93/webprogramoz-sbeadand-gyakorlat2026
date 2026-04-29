@@ -1,76 +1,79 @@
 <?php
-// Hibakeresés kényszerítése
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *'); 
+header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
-// Fejlécek: CORS a React-nek és UTF-8 kódolás
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-
-$type = $_GET['adat'] ?? 'filmek';
-$dataDir = __DIR__ . '/../data/';
-$files = [
-    'filmek' => $dataDir . 'film.txt',
-    'mozik'  => $dataDir . 'mozi.txt',
-    'helyek' => $dataDir . 'hely.txt'
-];
-
-$filePath = $files[$type] ?? $files['filmek'];
-
-if (!file_exists($filePath)) {
-    die(json_encode(["error" => "Fajl nem talalhato"]));
+// Az OPTIONS kérés kezelése (a böngésző először ezt küldi el ellenőrzésként)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit;
 }
 
-// 1. Beolvasás és kódolás javítása
-$content = file_get_contents($filePath);
-// Biztosítjuk az UTF-8 kódolást (ha esetleg ISO-8859-2 lenne a fájl)
-if (!mb_check_encoding($content, 'UTF-8')) {
-    $content = mb_convert_encoding($content, 'UTF-8', 'ISO-8859-2');
+include 'db.php';
+
+$adat = isset($_GET['adat']) ? $_GET['adat'] : '';
+
+// --- 1. ADATOK LEKÉRÉSE (GET) ---
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($adat == 'filmek') {
+        $sql = "SELECT * FROM filmek";
+        $result = $conn->query($sql);
+        $lista = [];
+        while($row = $result->fetch_assoc()) { $lista[] = $row; }
+        echo json_encode($lista);
+    } 
+    elseif ($adat == 'mozik') {
+        $sql = "SELECT * FROM mozik";
+        $result = $conn->query($sql);
+        $lista = [];
+        while($row = $result->fetch_assoc()) { $lista[] = $row; }
+        echo json_encode($lista);
+    }
+    elseif ($adat == 'helyek') {
+        $sql = "SELECT * FROM helyek";
+        $result = $conn->query($sql);
+        $lista = [];
+        while($row = $result->fetch_assoc()) { $lista[] = $row; }
+        echo json_encode($lista);
+    }
 }
 
-// 2. Tisztítás
-$content = str_replace("\r", "", trim($content));
-$lines = explode("\n", $content);
+// --- 2. ÜZENET MENTÉSE (POST) ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $adat == 'uzenet_kuldes') {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if ($input) {
+        $nev = $conn->real_escape_string($input['nev']);
+        $email = $conn->real_escape_string($input['email']);
+        $uzenet = $conn->real_escape_string($input['uzenet']);
 
-// 3. Fejléc kinyerése
-$headerLine = array_shift($lines);
-$header = explode("\t", trim($headerLine));
-$colCount = count($header);
-
-$data = [];
-$currentRecord = [];
-
-// 4. Intelligens sorfeldolgozás (kezeli a kettétört sorokat)
-foreach ($lines as $line) {
-    if (trim($line) === "") continue;
-    $parts = explode("\t", $line);
-
-    // Ha az első elem szám, az egy ÚJ rekord kezdete (pl. 1, 2, 3...)
-    if (is_numeric($parts[0])) {
-        // Mentjük az előzőt, ha kész van
-        if (!empty($currentRecord) && count($currentRecord) === $colCount) {
-            $data[] = array_combine($header, $currentRecord);
-        }
-        $currentRecord = $parts;
-    } else {
-        // Ha nem számmal kezdődik, ez a sor az előző rekord folytatása (pl. szétcsúszott cím)
-        if (!empty($currentRecord)) {
-            $lastIdx = count($currentRecord) - 1;
-            $currentRecord[$lastIdx] .= " " . trim($line);
+        $sql = "INSERT INTO uzenetek (nev, email, uzenet) VALUES ('$nev', '$email', '$uzenet')";
+        
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(["status" => "success", "message" => "Üzenet elmentve!"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => $conn->error]);
         }
     }
 }
 
-// Utolsó rekord mentése
-if (!empty($currentRecord) && count($currentRecord) === $colCount) {
-    $data[] = array_combine($header, $currentRecord);
+// --- 3. FILM TÖRLÉSE (DELETE) ---
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+    $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+    if ($id > 0) {
+        // Fontos: Előbb a kapcsolótáblából (helyek) is törölni kellene a referenciát, 
+        // de ha a tábla létrehozásakor nem volt ON DELETE CASCADE, akkor manuálisan kell:
+        $conn->query("DELETE FROM helyek WHERE fkod = $id");
+        
+        $sql = "DELETE FROM filmek WHERE fkod = $id";
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(["status" => "success", "message" => "Film törölve!"]);
+        } else {
+            echo json_encode(["status" => "error", "message" => $conn->error]);
+        }
+    }
 }
 
-// 5. JSON kiküldése hibaellenőrzéssel
-$jsonOutput = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
-if ($jsonOutput === false) {
-    echo json_encode(["error" => "JSON hiba: " . json_last_error_msg()]);
-} else {
-    echo $jsonOutput;
-}
+$conn->close();
+?>
