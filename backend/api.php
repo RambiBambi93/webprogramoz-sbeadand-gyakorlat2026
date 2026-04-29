@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-// --- 2. ADATOK MENTÉSE ÉS MÓDOSÍTÁSA (POST) ---
+// --- 2. ADATOK MENTÉSE, MÓDOSÍTÁSA ÉS BEJELENTKEZÉS (POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     
@@ -77,13 +77,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mufaj = $conn->real_escape_string($input['mufaj']);
             $hossz = intval($input['hossz']);
 
-            // SQL UPDATE parancs: az adott fkod-ú sor adatait írjuk felül
             $sql = "UPDATE filmek SET filmcim='$cim', mufaj='$mufaj', hossz=$hossz WHERE fkod=$id";
             
             if ($conn->query($sql) === TRUE) {
                 echo json_encode(["status" => "success", "message" => "Film frissítve!"]);
             } else {
                 echo json_encode(["status" => "error", "message" => $conn->error]);
+            }
+        }
+        // --- BEJELENTKEZÉS (Ezt adtuk hozzá) ---
+        elseif ($adat == 'login') {
+            $fnev = $conn->real_escape_string($input['username']);
+            $pw = $conn->real_escape_string($input['password']);
+
+            // Megnézzük, van-e ilyen felhasználó ezzel a jelszóval
+            $sql = "SELECT teljes_nev FROM felhasznalok WHERE felhasznalonev='$fnev' AND jelszo='$pw'";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                echo json_encode(["status" => "success", "user" => $user['teljes_nev']]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "Hibás adatok!"]);
             }
         }
     }
@@ -95,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 
     if ($id > 0) {
         $conn->query("DELETE FROM helyek WHERE fkod = $id");
-        
         $sql = "DELETE FROM filmek WHERE fkod = $id";
         if ($conn->query($sql) === TRUE) {
             echo json_encode(["status" => "success", "message" => "Film törölve!"]);
