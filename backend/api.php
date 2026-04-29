@@ -37,12 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-// --- 2. ADATOK MENTÉSE, MÓDOSÍTÁSA ÉS BEJELENTKEZÉS (POST) ---
+// --- 2. ADATOK MENTÉSE ÉS MÓDOSÍTÁSA (POST) ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = json_decode(file_get_contents('php://input'), true);
     
     if ($input) {
-        // --- ÜZENET KÜLDÉSE ---
         if ($adat == 'uzenet_kuldes') {
             $nev = $conn->real_escape_string($input['nev']);
             $email = $conn->real_escape_string($input['email']);
@@ -56,11 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(["status" => "error", "message" => $conn->error]);
             }
         } 
-        // --- ÚJ FILM HOZZÁADÁSA ---
         elseif ($adat == 'uj_film') {
             $cim = $conn->real_escape_string($input['filmcim']);
             $mufaj = $conn->real_escape_string($input['mufaj']);
-            $hossz = intval($input['hossz']);
+            $hossz = intval($input['hossz']); // Visszatettük intval-ra
 
             $sql = "INSERT INTO filmek (filmcim, mufaj, hossz) VALUES ('$cim', '$mufaj', $hossz)";
             
@@ -70,12 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(["status" => "error", "message" => $conn->error]);
             }
         }
-        // --- FILM SZERKESZTÉSE (UPDATE) ---
         elseif ($adat == 'szerkeszt_film') {
             $id = intval($input['fkod']);
             $cim = $conn->real_escape_string($input['filmcim']);
             $mufaj = $conn->real_escape_string($input['mufaj']);
-            $hossz = intval($input['hossz']);
+            $hossz = intval($input['hossz']); // Visszatettük intval-ra
 
             $sql = "UPDATE filmek SET filmcim='$cim', mufaj='$mufaj', hossz=$hossz WHERE fkod=$id";
             
@@ -85,12 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode(["status" => "error", "message" => $conn->error]);
             }
         }
-        // --- BEJELENTKEZÉS (Ezt adtuk hozzá) ---
         elseif ($adat == 'login') {
             $fnev = $conn->real_escape_string($input['username']);
             $pw = $conn->real_escape_string($input['password']);
 
-            // Megnézzük, van-e ilyen felhasználó ezzel a jelszóval
             $sql = "SELECT teljes_nev FROM felhasznalok WHERE felhasznalonev='$fnev' AND jelszo='$pw'";
             $result = $conn->query($sql);
 

@@ -1,109 +1,118 @@
 import React, { useState } from 'react';
 
 function Contact() {
-  const [formData, setFormData] = useState({ nev: '', email: '', uzenet: '' });
-  const [hiba, setHiba] = useState('');
-  const [siker, setSiker] = useState(false);
-  const [betoltes, setBetoltes] = useState(false);
+  const [nev, setNev] = useState('');
+  const [email, setEmail] = useState('');
+  const [uzenet, setUzenet] = useState('');
+  const [statusz, setStatusz] = useState('');
 
-  const ellenorzes = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // 1. JS Validáció (kötelező elem a beadandóban)
-    if (formData.nev.length < 3) {
-      setHiba("A név túl rövid (min. 3 karakter)!");
-      return;
-    }
-    if (!formData.email.includes('@')) {
-      setHiba("Érvénytelen e-mail cím!");
-      return;
-    }
-    if (formData.uzenet.length < 10) {
-      setHiba("Az üzenet legyen legalább 10 karakter!");
-      return;
-    }
+    setStatusz('');
 
-    setHiba("");
-    setBetoltes(true);
-
-    // 2. Küldés a Backendnek (PHP)
     try {
       const response = await fetch('http://localhost:8000/api.php?adat=uzenet_kuldes', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nev, email, uzenet }),
       });
-
-      const result = await response.json();
-
-      if (result.status === "success") {
-        setSiker(true);
+      const res = await response.json();
+      
+      if (res.status === "success") {
+        setStatusz("✅ Üzenet sikeresen elküldve!");
+        setNev('');
+        setEmail('');
+        setUzenet('');
       } else {
-        setHiba("Szerver hiba: " + result.message);
+        setStatusz("❌ Hiba: " + res.message);
       }
     } catch (err) {
-      setHiba("Nem sikerült kapcsolódni a szerverhez!");
-      console.error(err);
-    } finally {
-      setBetoltes(false);
+      setStatusz("❌ Hálózati hiba történt.");
     }
   };
 
   return (
     <div className="container">
-      <h2>📩 Kapcsolat</h2>
-      {siker ? (
-        <div style={{padding: '20px', backgroundColor: '#d4edda', color: '#155724', borderRadius: '8px', textAlign: 'center'}}>
-          <h3>Szuper!</h3>
-          <p>Az üzenetedet sikeresen elmentettük az adatbázisba.</p>
-          <button onClick={() => setSiker(false)} className="login-btn">Új üzenet</button>
-        </div>
-      ) : (
-        <form onSubmit={ellenorzes} noValidate>
-          <div style={{marginBottom: '15px'}}>
-            <label>Név:</label>
+      <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>✉️ Kapcsolatfelvétel</h2>
+      
+      {/* ITT VAN A KESKENYEBB, KÖZÉPRE IGAZÍTOTT DOBOZ */}
+      <div style={{
+        maxWidth: '65%',         /* Szélesség lekorlátozása 65%-ra */
+        margin: '0 auto',        /* Középre igazítás */
+        backgroundColor: '#1a1c22', /* Sötét doboz, hogy passzoljon a témához */
+        padding: '30px', 
+        borderRadius: '12px',
+        border: '1px solid #34495e',
+        boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+      }}>
+        <p style={{ textAlign: 'center', marginBottom: '25px', color: '#bdc3c7' }}>
+          Kérdése van? Írjon nekünk, és hamarosan válaszolunk!
+        </p>
+
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Név:</label>
             <input 
               type="text" 
               className="search-bar" 
-              style={{width: '100%', position: 'static', marginTop: '5px'}}
-              value={formData.nev}
-              onChange={(e) => setFormData({...formData, nev: e.target.value})}
+              style={{ width: '100%', boxSizing: 'border-box' }}
+              value={nev} 
+              onChange={(e) => setNev(e.target.value)} 
+              placeholder="Pl. Gipsz Jakab"
+              required 
             />
           </div>
-          <div style={{marginBottom: '15px'}}>
-            <label>E-mail:</label>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>E-mail cím:</label>
             <input 
               type="email" 
               className="search-bar" 
-              style={{width: '100%', position: 'static', marginTop: '5px'}}
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              style={{ width: '100%', boxSizing: 'border-box' }}
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              placeholder="pelda@email.hu"
+              required 
             />
           </div>
-          <div style={{marginBottom: '15px'}}>
-            <label>Üzenet:</label>
+          <div>
+            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Üzenet:</label>
             <textarea 
-              rows="5" 
-              style={{width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ccc', marginTop: '5px', fontFamily: 'inherit'}}
-              value={formData.uzenet}
-              onChange={(e) => setFormData({...formData, uzenet: e.target.value})}
+              className="search-bar" 
+              rows="6" 
+              style={{ width: '100%', boxSizing: 'border-box', resize: 'vertical' }}
+              value={uzenet} 
+              onChange={(e) => setUzenet(e.target.value)} 
+              placeholder="Ide írja az üzenetét..."
+              required 
             ></textarea>
           </div>
           
-          {hiba && <p style={{color: 'red', fontWeight: 'bold'}}>{hiba}</p>}
+          {/* Visszajelző üzenet (sikeres/sikertelen küldés) */}
+          {statusz && (
+            <p style={{ 
+              textAlign: 'center', 
+              color: statusz.includes('❌') ? '#ff4d4d' : '#2ecc71', 
+              fontWeight: 'bold',
+              margin: '10px 0'
+            }}>
+              {statusz}
+            </p>
+          )}
           
-          <button 
-            type="submit" 
-            className="login-btn" 
-            style={{width: '100%', cursor: 'pointer', border: 'none', opacity: betoltes ? 0.7 : 1}}
-            disabled={betoltes}
-          >
-            {betoltes ? "Küldés..." : "Üzenet küldése"}
+          <button type="submit" className="login-btn" style={{ height: '45px', border: 'none', cursor: 'pointer', width: '100%', fontSize: '1rem', marginTop: '10px' }}>
+            Üzenet küldése
           </button>
         </form>
-      )}
+      </div>
+
+      {/* Mobilos nézet miatt, ha nagyon összeugrik a képernyő, alkalmazkodni fog */}
+      <style>{`
+        @media (max-width: 768px) {
+          div[style*="maxWidth: 65%"] {
+            max-width: 95% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -7,10 +7,7 @@ function Movies() {
   const [kereso, setKereso] = useState('');
   const [betoltes, setBetoltes] = useState(true);
 
-  // Állapot az űrlaphoz (Hozzáadás/Szerkesztés ugyanazt használja)
   const [ujFilm, setUjFilm] = useState({ filmcim: '', mufaj: '', hossz: '' });
-  
-  // Ez tárolja, hogy épp melyik filmet szerkesztjük. Ha null, akkor "Hozzáadás" módban vagyunk.
   const [szerkesztesId, setSzerkesztesId] = useState(null);
 
   const betoltAdatok = () => {
@@ -35,7 +32,6 @@ function Movies() {
     betoltAdatok();
   }, []);
 
-  // --- TÖRLÉS ---
   const handleDelete = async (id) => {
     if (window.confirm("Biztosan törölni szeretnéd ezt a filmet?")) {
       try {
@@ -52,11 +48,9 @@ function Movies() {
     }
   };
 
-  // --- MENTÉS (Hozzáadás VAGY Módosítás) ---
   const handleSave = async (e) => {
     e.preventDefault();
     
-    // Eldöntjük a célpontot: ha van szerkesztesId, akkor a szerkesztés API-t hívjuk
     const celAdat = szerkesztesId ? 'szerkeszt_film' : 'uj_film';
     const kuldeniValoAdat = szerkesztesId ? { ...ujFilm, fkod: szerkesztesId } : ujFilm;
 
@@ -69,23 +63,21 @@ function Movies() {
       const res = await response.json();
       
       if (res.status === "success") {
-        setUjFilm({ filmcim: '', mufaj: '', hossz: '' }); // Mezők ürítése
-        setSzerkesztesId(null); // Kilépés szerkesztő módból
-        betoltAdatok(); // Lista frissítése
+        setUjFilm({ filmcim: '', mufaj: '', hossz: '' });
+        setSzerkesztesId(null);
+        betoltAdatok();
       }
     } catch (err) {
       alert("Hiba történt a mentés során!");
     }
   };
 
-  // Szerkesztés megkezdése: adatok betöltése a táblázatból az űrlapba
   const startEdit = (film) => {
     setUjFilm({ filmcim: film.filmcim, mufaj: film.mufaj, hossz: film.hossz });
     setSzerkesztesId(film.fkod);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Felugrunk az oldal tetejére az űrlaphoz
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Mégse gomb (Szerkesztés megszakítása)
   const cancelEdit = () => {
     setUjFilm({ filmcim: '', mufaj: '', hossz: '' });
     setSzerkesztesId(null);
@@ -107,16 +99,20 @@ function Movies() {
     <div className="container">
       <h2>🎬 Filmek kezelése (CRUD)</h2>
 
-      {/* DINAMIKUS ŰRLAP (Sárga, ha szerkesztünk, Szürke, ha újat adunk hozzá) */}
+      {/* SÖTÉTÍTETT DINAMIKUS ŰRLAP VISSZAÁLLÍTVA BEÍRÓSRA */}
       <div style={{
-        backgroundColor: szerkesztesId ? '#fff3cd' : '#f8f9fa', 
+        backgroundColor: szerkesztesId ? '#2c291a' : '#1a1c22', 
         padding: '20px', 
         borderRadius: '10px', 
         marginBottom: '25px', 
-        border: '1px solid #ddd',
+        border: szerkesztesId ? '1px solid #4a4320' : '1px solid #34495e',
         transition: '0.3s'
       }}>
-        <h3 style={{marginTop: 0, fontSize: '1.1rem'}}>
+        <h3 style={{
+          marginTop: 0, 
+          fontSize: '1.1rem', 
+          color: szerkesztesId ? '#f1c40f' : '#ffffff' 
+        }}>
           {szerkesztesId ? '⚠️ Film adatainak módosítása' : '➕ Új film felvétele'}
         </h3>
         <form onSubmit={handleSave} style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>
@@ -125,27 +121,31 @@ function Movies() {
             style={{position: 'static', flex: '2', minWidth: '200px'}}
             value={ujFilm.filmcim} onChange={(e) => setUjFilm({...ujFilm, filmcim: e.target.value})}
           />
+          
           <input 
             type="text" placeholder="Műfaj" className="search-bar" required
             style={{position: 'static', flex: '1', minWidth: '150px'}}
             value={ujFilm.mufaj} onChange={(e) => setUjFilm({...ujFilm, mufaj: e.target.value})}
           />
+
           <input 
             type="number" placeholder="Perc" className="search-bar" required
             style={{position: 'static', width: '100px'}}
             value={ujFilm.hossz} onChange={(e) => setUjFilm({...ujFilm, hossz: e.target.value})}
           />
+
           <button type="submit" className="login-btn" style={{
             border: 'none', 
             cursor: 'pointer', 
-            height: '40px',
-            backgroundColor: szerkesztesId ? '#ffc107' : '#007bff'
+            height: '42px',
+            backgroundColor: szerkesztesId ? '#d4a017' : '#00d4ff',
+            color: '#1a1c22'
           }}>
             {szerkesztesId ? 'Módosítás mentése' : 'Hozzáadás'}
           </button>
           
           {szerkesztesId && (
-            <button type="button" onClick={cancelEdit} className="login-btn" style={{backgroundColor: '#6c757d', border: 'none'}}>
+            <button type="button" onClick={cancelEdit} className="login-btn" style={{backgroundColor: '#4a5d73', color: 'white', border: 'none', height: '42px'}}>
               Mégse
             </button>
           )}
@@ -176,7 +176,7 @@ function Movies() {
         </thead>
         <tbody>
           {szurtFilmek.map((film) => (
-            <tr key={film.fkod} style={{backgroundColor: szerkesztesId === film.fkod ? '#fff9db' : ''}}>
+            <tr key={film.fkod} style={{backgroundColor: szerkesztesId === film.fkod ? '#2c291a' : ''}}>
               <td><strong>{film.filmcim}</strong></td>
               <td>{film.mufaj}</td>
               <td>{film.hossz} perc</td>
@@ -184,7 +184,7 @@ function Movies() {
               <td style={{textAlign: 'center', display: 'flex', gap: '5px', justifyContent: 'center'}}>
                 <button 
                   onClick={() => startEdit(film)}
-                  style={{backgroundColor: '#ffc107', color: 'black', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}
+                  style={{backgroundColor: '#d4a017', color: 'black', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}
                 >
                   Szerkeszt
                 </button>

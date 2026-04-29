@@ -39,17 +39,25 @@ function Home() {
         </div>
       </section>
 
+      {/* TÉRKÉP SZEKCIÓ - CINEMA CITY ALLEE */}
+     {/* TÉRKÉP SZEKCIÓ - CINEMA CITY ALLEE */}
       <section className="map-section" style={{marginTop: '60px'}}>
-        <h3 style={{textAlign: 'center', marginBottom: '20px'}}>📍 Hol talál meg minket?</h3>
-        <iframe 
-          title="Google Maps - Mozi helyszín"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2695.845012586022!2d19.06798151562305!3d47.48512147917696!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4741dc5a24ecfcab%3A0x6c6e755252834db9!2sCorvin%20Mozi!5e0!3m2!1shu!2shu!4v1683050141258!5m2!1shu!2shu" 
-          width="100%" 
-          height="350" 
-          style={{border:0, borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'}} 
-          allowFullScreen="" 
-          loading="lazy"
-        ></iframe>
+        <h3 style={{textAlign: 'center', marginBottom: '20px'}}>📍 Itt megtalál minket: Cinema City Allee</h3>
+        <div style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>
+          <iframe 
+            title="Cinema City Allee Térkép"
+            src="https://maps.google.com/maps?q=Cinema+City+Allee+Budapest&output=embed" 
+            width="100%" 
+            height="400" 
+            style={{ border: 0 }} 
+            allowFullScreen="" 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <p style={{ textAlign: 'center', marginTop: '10px', color: '#bdc3c7', fontSize: '0.9rem' }}>
+          1117 Budapest, Október huszonharmadika u. 8-10.
+        </p>
       </section>
     </div>
   );
