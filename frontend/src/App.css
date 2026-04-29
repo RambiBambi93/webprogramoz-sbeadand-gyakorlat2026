@@ -1,4 +1,16 @@
-/* --- FEJLÉC ELRENDEZÉS JAVÍTÁSA --- */
+/* Alapok */
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+/* --- A FEJLÉC VÍZSZINTES ELRENDEZÉSE --- */
 .App-header {
   background: linear-gradient(90deg, #1a1c22 0%, #2c3e50 100%);
   color: white;
@@ -6,31 +18,40 @@
   top: 0;
   z-index: 1000;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  min-height: 70px; /* Fix magasság helyett minimum magasság */
+  height: 70px; /* Fix magasság a stabilitásért */
   width: 100%;
-  display: flex;
-  align-items: center;
 }
 
 .header-container {
-  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  height: 100%;
   display: flex;
-  flex-direction: row; /* Kényszerítjük a vízszintes elrendezést */
-  justify-content: space-between; /* Logó balra, menü középre, név jobbra */
-  align-items: center;
+  flex-direction: row;      /* Ez kényszeríti az elemeket EGY SORBA */
+  justify-content: space-between; /* Logó balra, Menü középre, Infó jobbra */
+  align-items: center;      /* Függőlegesen középre igazít */
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
-/* Navigációs fülek egymás mellett */
+/* Logó */
+.logo-link {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  white-space: nowrap;      /* Ne törjön két sorba a logó */
+}
+
+.logo-link span {
+  color: #00d4ff;
+}
+
+/* Menüfülek egymás mellett */
 .nav-menu {
   display: flex;
-  flex-direction: row; /* Garantáljuk, hogy a fülek egymás mellett legyenek */
-  gap: 15px; /* Térköz a menüpontok között */
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  flex-direction: row;      /* Vízszintes sorba rendezi a linkeket */
+  gap: 15px;                /* Távolság a gombok között */
 }
 
 .nav-link {
@@ -39,11 +60,16 @@
   font-weight: 500;
   padding: 10px 15px;
   border-radius: 8px;
-  transition: all 0.3s ease;
-  white-space: nowrap; /* Megakadályozza a szöveg törését több sorba */
+  transition: 0.3s;
+  white-space: nowrap;      /* Megakadályozza, hogy a szöveg egymás alá csússzon */
 }
 
-/* Felhasználói rész elrendezése */
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #00d4ff;
+}
+
+/* Jobb oldali sáv */
 .user-info {
   display: flex;
   flex-direction: row;
@@ -51,17 +77,35 @@
   gap: 15px;
 }
 
-/* Mobil nézet - csak akkor ugrik egymás alá, ha tényleg kevés a hely */
-@media (max-width: 900px) {
-  .header-container {
-    flex-direction: column;
-    padding: 15px;
-    gap: 10px;
-  }
-  
-  .nav-menu {
-    gap: 5px;
-    flex-wrap: wrap; /* Mobilra ha nem fér el, több sorba tördeli */
-    justify-content: center;
-  }
+.user-name {
+  font-size: 0.85rem;
+  color: #bdc3c7;
+  white-space: nowrap;
+}
+
+.login-btn {
+  background-color: #00d4ff;
+  color: #1a1c22;
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+/* --- TARTALOM --- */
+.container {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Mobil nézet (csak 800px alatt ugranak egymás alá) */
+@media (max-width: 800px) {
+  .App-header { height: auto; padding: 10px 0; }
+  .header-container { flex-direction: column; gap: 10px; }
+  .nav-menu { flex-wrap: wrap; justify-content: center; }
 }
