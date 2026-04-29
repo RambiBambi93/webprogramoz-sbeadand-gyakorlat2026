@@ -1,90 +1,67 @@
-/* Alapbeállítások, hogy ne legyen váratlan fehér szegély */
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-}
-
-.App {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f4f4; /* Egy nagyon halvány szürke háttér az egésznek */
-  min-height: 100vh;
-}
-
-/* A FEJLÉC JAVÍTÁSA: 
-   Fontos: Az 'App' mappának NEM szabad 'overflow: hidden'-nek lennie, 
-   különben a sticky nem működik! 
-*/
+/* --- FEJLÉC ELRENDEZÉS JAVÍTÁSA --- */
 .App-header {
-  background-color: #282c34 !important; /* Kényszerítjük a sötét színt */
-  color: white !important;              /* Kényszerítjük a fehér szöveget */
-  padding: 10px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  
-  /* Ez teszi oda a tetejére: */
-  position: -webkit-sticky; /* Safari támogatás */
+  background: linear-gradient(90deg, #1a1c22 0%, #2c3e50 100%);
+  color: white;
   position: sticky;
   top: 0;
-  
-  z-index: 9999; /* Hogy minden felett maradjon görgetéskor */
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.App-header h1 {
-  margin: 0;
-  font-size: 1.4rem;
-  color: white;
-}
-
-/* Keresőmező */
-.search-bar {
-  padding: 8px 15px;
-  border-radius: 20px;
-  border: 1px solid #444;
-  width: 250px;
-  background-color: #fff;
-  color: #333;
-}
-
-/* Tartalom rész */
-.movie-container {
-  padding: 20px;
-  background-color: white;
-  margin: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* Táblázat */
-table {
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  min-height: 70px; /* Fix magasság helyett minimum magasság */
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
+  display: flex;
+  align-items: center;
 }
 
-th {
-  background-color: #eee;
-  padding: 12px;
-  text-align: left;
-  position: sticky;
-  top: 55px; /* A fő fejléc alá tapad be a táblázat fejléce is! */
-  z-index: 999;
-  border-bottom: 2px solid #ddd;
+.header-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row; /* Kényszerítjük a vízszintes elrendezést */
+  justify-content: space-between; /* Logó balra, menü középre, név jobbra */
+  align-items: center;
 }
 
-td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+/* Navigációs fülek egymás mellett */
+.nav-menu {
+  display: flex;
+  flex-direction: row; /* Garantáljuk, hogy a fülek egymás mellett legyenek */
+  gap: 15px; /* Térköz a menüpontok között */
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-tr:hover {
-  background-color: #f9f9f9;
+.nav-link {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap; /* Megakadályozza a szöveg törését több sorba */
 }
 
-.stats-bar {
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #555;
+/* Felhasználói rész elrendezése */
+.user-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Mobil nézet - csak akkor ugrik egymás alá, ha tényleg kevés a hely */
+@media (max-width: 900px) {
+  .header-container {
+    flex-direction: column;
+    padding: 15px;
+    gap: 10px;
+  }
+  
+  .nav-menu {
+    gap: 5px;
+    flex-wrap: wrap; /* Mobilra ha nem fér el, több sorba tördeli */
+    justify-content: center;
+  }
 }
