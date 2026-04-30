@@ -51,7 +51,6 @@ function Images({ user }) {
     <div className="container">
       <h2 style={{ textAlign: 'center', marginBottom: '30px' }}>📷 Mozi Galéria</h2>
 
-      {/* Feltöltő rész szépítése */}
       {user !== "Vendég" && (
         <div style={{ 
           backgroundColor: '#1a1c22', 
@@ -69,12 +68,7 @@ function Images({ user }) {
               type="file" 
               accept="image/*" 
               onChange={(e) => setKivalasztottKep(e.target.files[0])} 
-              style={{ 
-                color: '#bdc3c7',
-                padding: '10px',
-                backgroundColor: '#2c3e50',
-                borderRadius: '8px'
-              }} 
+              style={{ color: '#bdc3c7', padding: '10px', backgroundColor: '#2c3e50', borderRadius: '8px' }} 
               required 
             />
             <button type="submit" className="login-btn" style={{ padding: '12px 25px', border: 'none', cursor: 'pointer' }}>
@@ -84,35 +78,38 @@ function Images({ user }) {
         </div>
       )}
 
-      {/* Galéria rács (Grid) szépítése */}
+      {/* JAVÍTOTT GRID: justifyContent: 'center' hozzáadva, hogy a kártyák középen legyenek */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '25px',
-        padding: '10px'
+        gridTemplateColumns: 'repeat(auto-fill, 320px)', // Fix szélességű oszlopok
+        gap: '30px',
+        padding: '20px',
+        justifyContent: 'center', // EZ VISZI KÖZÉPRE A KÁRTYÁKAT
+        width: '100%'
       }}>
         {kepek.map(kep => (
-          <div key={kep.id} className="gallery-card">
-            <div style={{ 
-              overflow: 'hidden', 
-              borderRadius: '12px', 
-              backgroundColor: '#1a1c22',
-              boxShadow: '0 10px 20px rgba(0,0,0,0.4)',
-              border: '1px solid #34495e',
-              transition: 'transform 0.3s ease'
-            }}>
-              <img 
-                src={`./uploads/${kep.fajlnev}`} 
-                alt="Mozi pillanatkép" 
-                style={{ 
-                  width: '100%', 
-                  height: '250px', // Kicsit magasabb, hogy jobban látszódjon
-                  objectFit: 'cover', // Kitölti a teret torzítás nélkül
-                  display: 'block',
-                  transition: 'filter 0.3s ease'
-                }} 
-              />
-            </div>
+          <div key={kep.id} style={{
+            backgroundColor: '#0f1115',
+            borderRadius: '12px',
+            border: '1px solid #34495e',
+            overflow: 'hidden',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+            height: '400px', // Megemelt magasság
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '10px' // Kis belső margó, hogy ne érjen a széléhez a kép
+          }}>
+            <img 
+              src={`./uploads/${kep.fajlnev}`} 
+              alt="Mozi pillanatkép" 
+              style={{ 
+                maxWidth: '100%', 
+                maxHeight: '100%', 
+                objectFit: 'contain', // Teljesen látszik a kép
+                display: 'block'
+              }} 
+            />
           </div>
         ))}
       </div>
@@ -122,17 +119,6 @@ function Images({ user }) {
           Még nem érkeztek képek a galériába.
         </p>
       )}
-
-      {/* CSS animációk az App.css-be vagy ide */}
-      <style>{`
-        .gallery-card:hover div {
-          transform: translateY(-5px);
-          border-color: #3498db;
-        }
-        .gallery-card:hover img {
-          filter: brightness(1.1);
-        }
-      `}</style>
     </div>
   );
 }
