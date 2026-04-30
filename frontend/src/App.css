@@ -1,9 +1,11 @@
+/* App.css - Integrált és javított verzió */
+
 /* Alapok */
 body, html {
   margin: 0;
   padding: 0;
-  background-color: #1a1c22; /* Sötét háttér, ami megegyezik a fejléc bal oldalával */
-  color: #ecf0f1; /* Világos betűszín a sötét háttéren */
+  background-color: #1a1c22; 
+  color: #ecf0f1; 
 }
 
 .App {
@@ -19,7 +21,7 @@ body, html {
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5); /* Erősebb árnyék a sötét témához */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   height: 70px;
   width: 100%;
 }
@@ -59,7 +61,7 @@ body, html {
 .nav-link {
   color: #ecf0f1;
   text-decoration: none;
-  font-weight: bold; /* Itt változtattuk félkövérre! */
+  font-weight: bold;
   padding: 10px 15px;
   border-radius: 8px;
   transition: 0.3s;
@@ -105,42 +107,32 @@ body, html {
   max-width: 1000px;
   margin: 30px auto;
   padding: 30px;
-  background: #2c3e50; /* A konténerek a fejléc jobb oldali, picit világosabb kék színét kapják */
+  background: #2c3e50; 
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.4);
   color: #ffffff;
 }
 
-/* --- ŰRLAPOK, TÁBLÁZATOK ÉS MEZŐK --- */
+/* --- ŰRLAPOK ÉS MEZŐK --- */
 input, textarea, select, .search-bar {
   background-color: #ffffff !important; 
-  color: #000000 !important; /* Teljesen fekete betűk */
-  font-weight: bold !important; /* Félkövér */
+  color: #000000 !important; 
+  font-weight: bold !important; 
   border: 2px solid #4a5d73 !important;
   padding: 10px;
   border-radius: 6px;
   font-family: inherit;
 }
 
-/* A kitöltetlen mezők (placeholder) szövege is fekete és félkövér */
 input::placeholder, textarea::placeholder {
   color: #000000 !important;
   font-weight: bold !important;
 }
 
-/* A szám beviteli mező "nyilainak" eltüntetése a letisztultságért */
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
-}
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
+/* --- JAVÍTOTT TÁBLÁZAT (Vonalak fixálása) --- */
 table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Összevonja a szegélyeket a folytonos vonalért */
   background-color: #1a1c22;
   color: white;
   border-radius: 8px;
@@ -153,18 +145,26 @@ th {
   color: #00d4ff;
   padding: 12px;
   border-bottom: 2px solid #4a5d73;
+  text-align: left;
 }
 
 td {
-  padding: 12px;
-  border-bottom: 1px solid #34495e;
+  padding: 15px 12px; 
+  border-bottom: 1px solid #34495e; /* Végigfutó elválasztó vonal[cite: 1] */
+  vertical-align: middle; /* Függőleges középre igazítás a gombok miatt */
 }
 
 tr:hover {
   background-color: #242830;
 }
 
-/* Kártyák a videókhoz a főoldalon */
+/* Műveletek oszlop speciális igazítása */
+td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* --- EGYÉB ELEMEK --- */
 .video-card {
   background-color: #1a1c22;
   padding: 20px;
@@ -172,7 +172,6 @@ tr:hover {
   border: 1px solid #34495e;
 }
 
-/* A film módosításakor megjelenő sárga doboz felülírása sötét módra */
 div[style*="background-color: #fff3cd"], 
 div[style*="backgroundColor: #fff3cd"],
 div[style*="backgroundColor: rgb(255, 243, 205)"] {
@@ -181,7 +180,6 @@ div[style*="backgroundColor: rgb(255, 243, 205)"] {
   color: #f1c40f !important;
 }
 
-/* Mobil nézet (csak 800px alatt ugranak egymás alá) */
 @media (max-width: 800px) {
   .App-header { height: auto; padding: 15px 0; }
   .header-container { flex-direction: column; gap: 15px; }

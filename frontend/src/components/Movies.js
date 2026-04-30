@@ -12,7 +12,6 @@ function Movies() {
 
   const betoltAdatok = () => {
     Promise.all([
-      // JAVÍTVA: Relatív útvonalak a lekérésekhez
       fetch('./api.php?adat=filmek').then(res => res.json()),
       fetch('./api.php?adat=mozik').then(res => res.json()),
       fetch('./api.php?adat=helyek').then(res => res.json())
@@ -36,7 +35,6 @@ function Movies() {
   const handleDelete = async (id) => {
     if (window.confirm("Biztosan törölni szeretnéd ezt a filmet?")) {
       try {
-        // JAVÍTVA: Relatív útvonal a törléshez
         const response = await fetch(`./api.php?id=${id}`, {
           method: 'DELETE',
         });
@@ -57,7 +55,6 @@ function Movies() {
     const kuldeniValoAdat = szerkesztesId ? { ...ujFilm, fkod: szerkesztesId } : ujFilm;
 
     try {
-      // JAVÍTVA: Relatív útvonal a mentéshez/módosításhoz
       const response = await fetch(`./api.php?adat=${celAdat}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -183,19 +180,22 @@ function Movies() {
               <td>{film.mufaj}</td>
               <td>{film.hossz} perc</td>
               <td><small>{holVetitik(film.fkod)}</small></td>
-              <td style={{textAlign: 'center', display: 'flex', gap: '5px', justifyContent: 'center'}}>
-                <button 
-                  onClick={() => startEdit(film)}
-                  style={{backgroundColor: '#d4a017', color: 'black', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}
-                >
-                  Szerkeszt
-                </button>
-                <button 
-                  onClick={() => handleDelete(film.fkod)}
-                  style={{backgroundColor: '#ff4d4d', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}
-                >
-                  Törlés
-                </button>
+              {/* JAVÍTOTT CELLA: A display:flex egy belső div-be került */}
+              <td style={{textAlign: 'center'}}>
+                <div style={{display: 'flex', gap: '5px', justifyContent: 'center'}}>
+                  <button 
+                    onClick={() => startEdit(film)}
+                    style={{backgroundColor: '#d4a017', color: 'black', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}
+                  >
+                    Szerkeszt
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(film.fkod)}
+                    style={{backgroundColor: '#ff4d4d', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}
+                  >
+                    Törlés
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
