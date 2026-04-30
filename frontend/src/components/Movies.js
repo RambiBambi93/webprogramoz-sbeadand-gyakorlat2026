@@ -12,9 +12,10 @@ function Movies() {
 
   const betoltAdatok = () => {
     Promise.all([
-      fetch('http://localhost:8000/api.php?adat=filmek').then(res => res.json()),
-      fetch('http://localhost:8000/api.php?adat=mozik').then(res => res.json()),
-      fetch('http://localhost:8000/api.php?adat=helyek').then(res => res.json())
+      // JAVÍTVA: Relatív útvonalak a lekérésekhez
+      fetch('./api.php?adat=filmek').then(res => res.json()),
+      fetch('./api.php?adat=mozik').then(res => res.json()),
+      fetch('./api.php?adat=helyek').then(res => res.json())
     ])
     .then(([fAdat, mAdat, hAdat]) => {
       setFilmek(fAdat);
@@ -35,7 +36,8 @@ function Movies() {
   const handleDelete = async (id) => {
     if (window.confirm("Biztosan törölni szeretnéd ezt a filmet?")) {
       try {
-        const response = await fetch(`http://localhost:8000/api.php?id=${id}`, {
+        // JAVÍTVA: Relatív útvonal a törléshez
+        const response = await fetch(`./api.php?id=${id}`, {
           method: 'DELETE',
         });
         const res = await response.json();
@@ -55,7 +57,8 @@ function Movies() {
     const kuldeniValoAdat = szerkesztesId ? { ...ujFilm, fkod: szerkesztesId } : ujFilm;
 
     try {
-      const response = await fetch(`http://localhost:8000/api.php?adat=${celAdat}`, {
+      // JAVÍTVA: Relatív útvonal a mentéshez/módosításhoz
+      const response = await fetch(`./api.php?adat=${celAdat}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(kuldeniValoAdat),
@@ -99,7 +102,6 @@ function Movies() {
     <div className="container">
       <h2>🎬 Filmek kezelése (CRUD)</h2>
 
-      {/* SÖTÉTÍTETT DINAMIKUS ŰRLAP VISSZAÁLLÍTVA BEÍRÓSRA */}
       <div style={{
         backgroundColor: szerkesztesId ? '#2c291a' : '#1a1c22', 
         padding: '20px', 

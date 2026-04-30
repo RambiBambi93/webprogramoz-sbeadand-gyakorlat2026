@@ -12,7 +12,8 @@ function Login({ setUser }) {
     setHiba("");
 
     try {
-      const response = await fetch('http://localhost:8000/api.php?adat=login', {
+      // JAVÍTVA: Relatív útvonalat használunk, így bárhonnan működik
+      const response = await fetch('./api.php?adat=login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: fnev, password: pw }),

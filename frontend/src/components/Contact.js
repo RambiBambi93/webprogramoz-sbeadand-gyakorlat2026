@@ -10,8 +10,8 @@ function Contact({ user }) {
     setStatusz('');
 
     try {
-      // Itt a 'nev' fixen a 'user' változó (Vendég vagy a belépett felhasználó)
-      const response = await fetch('http://localhost:8000/api.php?adat=uzenet_kuldes', {
+      // JAVÍTVA: Relatív útvonalat használunk, így HTTP és HTTPS alatt is működik
+      const response = await fetch('./api.php?adat=uzenet_kuldes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nev: user, email, uzenet }),
@@ -50,16 +50,15 @@ function Contact({ user }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <div>
             <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>Név:</label>
-            {/* ÍRÁSVÉDETT MEZŐ */}
             <input 
               type="text" 
               className="search-bar" 
               style={{ 
                 width: '100%', 
                 boxSizing: 'border-box', 
-                backgroundColor: '#dcdde1', // Kicsit szürkés háttér
-                cursor: 'not-allowed',      // "Tilos" egérmutató
-                color: '#2f3640'            // Sötétszürke betű
+                backgroundColor: '#dcdde1', 
+                cursor: 'not-allowed',      
+                color: '#2f3640'            
               }}
               value={user} 
               readOnly 

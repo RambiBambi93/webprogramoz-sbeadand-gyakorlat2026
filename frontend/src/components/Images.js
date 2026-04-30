@@ -6,7 +6,8 @@ function Images({ user }) {
 
   const betoltKepek = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api.php?adat=kepek');
+      // JAVÍTVA: Relatív útvonalat használunk (./api.php)
+      const response = await fetch('./api.php?adat=kepek');
       const data = await response.json();
       setKepek(data);
     } catch (error) {
@@ -29,7 +30,8 @@ function Images({ user }) {
     formData.append('kep', kivalasztottKep);
 
     try {
-      const response = await fetch('http://localhost:8000/api.php?adat=kep_feltoltes', {
+      // JAVÍTVA: Relatív útvonal a feltöltéshez is
+      const response = await fetch('./api.php?adat=kep_feltoltes', {
         method: 'POST',
         body: formData,
       });
@@ -39,16 +41,15 @@ function Images({ user }) {
       if (result.status === "success") {
           alert("✅ Kép sikeresen feltöltve!");
           setKivalasztottKep(null);
-          document.getElementById("kep-input").value = ""; // Mező kiürítése
-          betoltKepek(); // Galéria frissítése
+          document.getElementById("kep-input").value = ""; 
+          betoltKepek(); 
       } else {
-          // Ha a PHP küld hibát, ezt fogjuk látni!
           alert("❌ Hiba történt: " + result.message); 
       }
       
     } catch (error) {
       console.error("Hiba a feltöltés során:", error);
-      alert("❌ Hálózati hiba! Lehet, hogy túl nagy a kép mérete a PHP-nek (próbálj egy kisebb, pl. 1 MB alatti képet).");
+      alert("❌ Hálózati hiba! Lehet, hogy túl nagy a kép mérete.");
     }
   };
 
@@ -79,7 +80,8 @@ function Images({ user }) {
         {kepek.map(kep => (
           <div key={kep.id} style={{ borderRadius: '10px', overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
             <img 
-              src={`http://localhost:8000/uploads/${kep.fajlnev}`} 
+              // JAVÍTVA: A képek forrását is relatívan adjuk meg az uploads mappához
+              src={`./uploads/${kep.fajlnev}`} 
               alt="Galéria" 
               style={{ width: '100%', height: '200px', objectFit: 'cover' }} 
             />

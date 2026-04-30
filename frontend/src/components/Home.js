@@ -40,7 +40,6 @@ function Home() {
       </section>
 
       {/* TÉRKÉP SZEKCIÓ - CINEMA CITY ALLEE */}
-     {/* TÉRKÉP SZEKCIÓ - CINEMA CITY ALLEE */}
       <section className="map-section" style={{marginTop: '60px'}}>
         <h3 style={{textAlign: 'center', marginBottom: '20px'}}>📍 Itt megtalál minket: Cinema City Allee</h3>
         <div style={{ borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.4)' }}>

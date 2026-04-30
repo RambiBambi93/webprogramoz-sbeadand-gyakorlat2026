@@ -4,9 +4,11 @@ function Messages() {
   const [uzenetek, setUzenetek] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api.php?adat=uzenetek')
+    // JAVÍTVA: Relatív útvonal, hogy a szerver és a böngésző ne vesszenek össze
+    fetch('./api.php?adat=uzenetek')
       .then(res => res.json())
-      .then(data => setUzenetek(data));
+      .then(data => setUzenetek(data))
+      .catch(err => console.error("Hiba az üzenetek lekérésekor:", err));
   }, []);
 
   return (
