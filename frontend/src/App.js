@@ -9,11 +9,11 @@ import Messages from './components/Messages';
 import './App.css';
 
 function App() {
+  // Kezdetben "Vendég", bejelentkezés után egy objektum lesz: {vezeteknev, keresztnev, felhasznalonev}
   const [user, setUser] = useState("Vendég");
 
   return (
     <Router>
-      {/* A flex elrendezés biztosítja, hogy a lábléc mindig az alján maradjon */}
       <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         
         <header className="App-header">
@@ -32,38 +32,46 @@ function App() {
               )}
             </nav>
             <div className="user-info">
+              {/* JAVÍTVA: A kért formátum megjelenítése: Családi_név Utónév (Login_név) */}
               {user !== "Vendég" && (
-                <span className="user-name">Bejelentkezett: <b>{user}</b></span>
+                <span className="user-name" style={{ marginRight: '15px', color: '#bdc3c7' }}>
+                  Bejelentkezett: <b>{user.vezeteknev} {user.keresztnev} ({user.felhasznalonev})</b>
+                </span>
               )}
+              
               {user === "Vendég" ? (
                 <Link to="/login" className="login-btn">Bejelentkezés</Link>
               ) : (
-                <button onClick={() => setUser("Vendég")} className="login-btn" style={{border: 'none', cursor: 'pointer', backgroundColor: '#6c757d', color: 'white'}}>Kijelentkezés</button>
+                <button 
+                  onClick={() => setUser("Vendég")} 
+                  className="login-btn" 
+                  style={{border: 'none', cursor: 'pointer', backgroundColor: '#6c757d', color: 'white'}}
+                >
+                  Kijelentkezés
+                </button>
               )}
             </div>
           </div>
         </header>
 
-        {/* A flex: 1 kitölti az üres helyet a fejléc és a lábléc között */}
         <main style={{ flex: 1 }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/movies" element={<Movies />} />
-            <Route path="/contact" element={<Contact user={user} />} />
-            <Route path="/images" element={<Images user={user} />} />
+            <Route path="/contact" element={<Contact user={user !== "Vendég" ? user.felhasznalonev : "Vendég"} />} />
+            <Route path="/images" element={<Images user={user !== "Vendég" ? user.felhasznalonev : "Vendég"} />} />
             <Route path="/login" element={<Login setUser={setUser} />} />
             <Route path="/messages" element={user !== "Vendég" ? <Messages /> : <Home />} />
           </Routes>
         </main>
 
-        {/* LÁBLÉC (Minden oldalon megjelenik) */}
         <footer style={{
           backgroundColor: '#131519',
           color: '#bdc3c7',
           textAlign: 'center',
           padding: '20px',
           borderTop: '1px solid #34495e',
-          marginTop: 'auto', // Lenyomja a képernyő aljára
+          marginTop: 'auto',
           fontSize: '0.9rem'
         }}>
           <p style={{ margin: 0 }}>
