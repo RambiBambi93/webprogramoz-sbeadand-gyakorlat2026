@@ -22,17 +22,21 @@ function Home() {
             </div>
           </div>
 
-          {/* Második videó: A Gyűrűk Ura */}
+          {/* Második videó: Saját könyvtárból (Popcorn videó) */}
           <div className="video-card" style={{width: '100%', maxWidth: '800px'}}>
-            <h3 style={{textAlign: 'center', marginBottom: '15px'}}>A Gyűrűk Ura Jubileumi Vetítés 4K Extended</h3>
-            <div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '12px', boxShadow: '0 6px 15px rgba(0,0,0,0.3)'}}>
-              <iframe 
-                style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none'}}
-                src="https://www.youtube.com/embed/zckJCxYxn1g" 
-                title="A Gyűrűk Ura" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen>
-              </iframe>
+            <h3 style={{textAlign: 'center', marginBottom: '15px'}}>Moziélmény otthon</h3>
+            <div style={{position: 'relative', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 6px 15px rgba(0,0,0,0.3)', backgroundColor: '#000'}}>
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                controls
+                style={{ width: '100%', display: 'block', borderRadius: '12px' }}
+              >
+                <source src={`${process.env.PUBLIC_URL}/popcorn_video.mp4`} type="video/mp4" />
+                A böngésződ nem támogatja a videó lejátszását.
+              </video>
             </div>
           </div>
 
